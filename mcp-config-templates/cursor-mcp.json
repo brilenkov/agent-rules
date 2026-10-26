@@ -1,0 +1,22 @@
+{
+  "mcpServers": {
+    "brilenkov-shared": {
+      "url": "https://mcp-shared.onrender.com/sse",
+      "headers": {
+        "Authorization": "Bearer YOUR_MCP_TOKEN_HERE"
+      }
+    }
+  }
+}
+
+// Instructions:
+// 1. Get your MCP token from Bitwarden (or ask Alexey)
+// 2. Replace YOUR_MCP_TOKEN_HERE with the token
+// 3. Save as .cursor/mcp.json in your project root
+// 4. Restart Cursor
+// 5. Cursor now has access to:
+//    - Tools: scheduler_status, introduce_agent, find_skill, git_confirm,
+//      append_worklog, render_status
+//    - Resources: shared-state://, skill-list://, skill://{name},
+//      agent-bootstrap://, agent-bootstrap-public://
+//    - Prompts: start_session

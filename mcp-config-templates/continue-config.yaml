@@ -1,0 +1,11 @@
+mcpServers:
+  brilenkov-shared:
+    url: https://mcp-shared.onrender.com/sse
+    headers:
+      Authorization: "Bearer YOUR_MCP_TOKEN_HERE"
+
+# Instructions:
+# 1. Get your MCP token from Bitwarden (or ask Alexey)
+# 2. Replace YOUR_MCP_TOKEN_HERE with the token
+# 3. Add to ~/.continue/config.yaml (or project .continue/config.yaml)
+# 4. Restart Continue.dev

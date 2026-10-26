@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "brilenkov-shared": {
+      "type": "sse",
+      "url": "https://mcp-shared.onrender.com/sse",
+      "headers": {
+        "Authorization": "Bearer YOUR_MCP_TOKEN_HERE"
+      }
+    }
+  }
+}
+
+// Instructions:
+// 1. Get your MCP token from Bitwarden (or ask Alexey)
+// 2. Replace YOUR_MCP_TOKEN_HERE with the token
+// 3. Save as:
+//    Mac: ~/Library/Application Support/Claude/claude_desktop_config.json
+//    Windows: %APPDATA%\Claude\claude_desktop_config.json
+// 4. Restart Claude Desktop
+// 5. Claude now has access to MCP tools + resources
