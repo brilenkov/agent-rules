@@ -92,6 +92,50 @@ STOP and wait for "да". NEVER silent push.
 - (planned) `append_worklog(task_id, agent, summary)` — append to worklog (Tier B)
 - (planned) `render_status(service_name)` — query Render API
 
+## 3.5 Agent coordination protocol (MANDATORY for all MCP-connected agents)
+
+When working with MCP server, use these tools to prevent git conflicts with other agents:
+
+### Before starting work:
+```
+1. register_activity("your-name", "project-name", ["file1.py", "file2.py"], "task-id")
+   → Tells other agents: "I'm working on these files"
+   → Returns conflict warning if someone else is on same files
+
+2. check_conflict("project-name", ["file1.py"])
+   → Returns JSON: {conflicts: [], recommendation: "proceed"} or {conflicts: [...], recommendation: "wait"}
+```
+
+### During long tasks (>5 min):
+```
+3. heartbeat("your-name")
+   → Keeps you active. If no heartbeat for 10 min → auto-removed (others can proceed)
+```
+
+### Before git push:
+```
+4. check_conflict("project-name", ["file1.py"])
+   → Verify no new conflicts since you started
+```
+
+### After git push:
+```
+5. unregister_activity("your-name")
+   → Frees the files for other agents
+```
+
+### Read who's active:
+```
+Resource: active-agents://
+→ Returns list of all active agents + their projects + files + started time
+```
+
+### If conflict detected:
+- **Option A**: Wait — check again in 5 min (other agent may finish)
+- **Option B**: Work on different files (no overlap)
+- **Option C**: Ask user "zai-main is working on bot.py. Proceed anyway? (да/нет)"
+- **Option D**: Create git branch (for complex multi-file work)
+
 ## 4. How to get full context (per AI type)
 
 ### Tool-enabled AI (Cursor, Claude Code, Cline):
