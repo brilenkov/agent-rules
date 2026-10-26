@@ -64,8 +64,8 @@
 
 ### Phase 1: URGENT sanitize AGENT_BOOTSTRAP.md (in private brain-tools)
 **Why urgent**: AGENT_BOOTSTRAP.md currently contains REAL TOKEN VALUES:
-- `COMONITOR_BOT_TOKEN = 8888173059:AAEvP9VLClJemimeav0akH9b-MzgPg5PCk0`
-- `Telegram API_ID/HASH = 27644518 / 2a58808d4d9b12672ed290a07ba863bf`
+- `COMONITOR_BOT_TOKEN = REDACTED — see env var`
+- `Telegram API_ID/HASH = REDACTED / REDACTED`
 - Paths to session strings
 
 Even though brain-tools is private — anyone with PAT access (or in future anyone with read access if we accidentally leak PAT) sees these tokens. Move all token VALUES to Render env vars only; AGENT_BOOTSTRAP.md should only mention ENV VAR NAMES.
