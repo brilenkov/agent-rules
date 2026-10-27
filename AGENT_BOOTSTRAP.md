@@ -233,6 +233,72 @@ Examples:
 - Add issues from all repos → single view
 - Columns: Backlog → In Progress → Review → Done
 
+## 3.8 MCP client setup (MANDATORY for Z.ai agents)
+
+Every Z.ai chat session MUST install MCP client at session start for coordination.
+
+### Setup (run at session start, after AGENT_BOOTSTRAP read):
+```bash
+# 1. Install MCP SDK
+pip install mcp
+
+# 2. Set env vars
+export MCP_URL=https://mcp-shared.onrender.com/sse
+export MCP_TOKEN=<bearer token from Bitwarden>
+
+# 3. Get the client script (from brain-tools private repo)
+cp /home/z/my-project/brain-tools/scripts/mcp_client.py /home/z/my-project/scripts/
+
+# 4. Test connection
+python3 scripts/mcp_client.py list-tools
+# Should show 20 tools + 6 resources
+```
+
+### Coordination workflow (at start of every task):
+```bash
+# Register: "I'm working on X"
+python3 scripts/mcp_client.py register "Z.ai <chat-name>" "<project>" <file1> <file2>
+
+# Check conflicts
+python3 scripts/mcp_client.py check "<project>" <file1>
+
+# See who's active
+python3 scripts/mcp_client.py active-agents
+
+# Heartbeat (every 5 min for long tasks)
+python3 scripts/mcp_client.py heartbeat "Z.ai <chat-name>"
+
+# Unregister after done
+python3 scripts/mcp_client.py unregister "Z.ai <chat-name>"
+```
+
+### Other useful MCP commands:
+```bash
+# GitHub Issues
+python3 scripts/mcp_client.py issues brain-tools --open --labels fns-bot
+python3 scripts/mcp_client.py create-issue brain-tools "[fns-bot] bug: description" "body" bug fns-bot
+python3 scripts/mcp_client.py close-issue brain-tools 42 "Fixed"
+
+# Render status
+python3 scripts/mcp_client.py status fns-receipt-bot-docker
+python3 scripts/mcp_client.py bot-health https://fns-receipt-bot-docker.onrender.com
+python3 scripts/mcp_client.py bot-logs https://fns-receipt-bot-docker.onrender.com
+python3 scripts/mcp_client.py restart fns-receipt-bot-docker
+python3 scripts/mcp_client.py deploy fns-receipt-bot-docker
+
+# Skills
+python3 scripts/mcp_client.py find-skill "git push"
+
+# GitHub log
+python3 scripts/mcp_client.py github-log brain-tools
+```
+
+### Rule: coordination always through MCP when possible
+- ✅ Use `mcp_client.py` for register/check/heartbeat/unregister
+- ✅ Also use worklog.md (shared filesystem) as backup
+- ✅ Also use GitHub Issues for task tracking
+- ❌ Don't skip coordination — another agent might be working on same files
+
 ## 4. How to get full context (per AI type)
 
 ### Tool-enabled AI (Cursor, Claude Code, Cline):
