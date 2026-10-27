@@ -160,17 +160,28 @@ Examples:
 - `Z.ai transcribe` — for audio transcription
 - `Z.ai fns-bot` — for FNS receipt bot
 
-### Commit message format (Conventional Commits):
+### Commit message format (Conventional Commits + Co-authored-by):
 ```
 <type>(<project>): <description> (fixes #NN)
+
+Co-authored-by: Z.ai <chat-name> <z-ai-<chat-name>@local>
 
 Types: feat, fix, docs, refactor, test, chore
 Examples:
   feat(fns-bot): T-Bank SMS parser (fixes #42)
+
+  Co-authored-by: Z.ai fns-bot <z-ai-fns-bot@local>
+
   fix(mcp-shared): OOM on Render free tier
-  docs(agent-rules): SETUP_GUIDE.md
-  chore(council-bot): lazy ChromaDB init
+
+  Co-authored-by: Z.ai brain-tools <z-ai-brain-tools@local>
 ```
+
+**Co-authored-by — MANDATORY.** Every commit MUST include:
+```
+Co-authored-by: Z.ai <chat-name> <z-ai-<chat-name>@local>
+```
+This lets you identify WHICH agent made the commit in git history, even though all agents push under the same GitHub account (`brilenkov`).
 
 ## 3.7 Task tracking via GitHub Issues (MANDATORY)
 

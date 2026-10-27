@@ -47,13 +47,16 @@ git clone https://brilenkov:${PAT}@github.com/brilenkov/brain-tools.git /home/z/
 
 5. ПЕРЕД PUSH:
    python3 scripts/mcp_client.py check "<project>" <files>
-   git commit -m "<type>(<project>): <desc> (fixes #NN)"
+   git commit -m "<type>(<project>): <desc> (fixes #NN)
+
+   Co-authored-by: Z.ai <НАЗВАНИЕ> <z-ai-<НАЗВАНИЕ>@local>"
    git push origin main
 
 6. ПОСЛЕ PUSH:
    python3 scripts/mcp_client.py unregister "Z.ai-<НАЗВАНИЕ>"
 
 7. NO FORCE PUSH
+8. ВСЕГДА добавляй Co-authored-by в commit (MANDATORY)
 
 Что делаем?
 ```
