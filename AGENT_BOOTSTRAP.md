@@ -242,12 +242,15 @@ Every Z.ai chat session MUST install MCP client at session start for coordinatio
 # 1. Install MCP SDK
 pip install mcp
 
-# 2. Set env vars
+# 2. Set env vars (token from Bitwarden or from user in chat)
 export MCP_URL=https://mcp-shared.onrender.com/sse
 export MCP_TOKEN=<bearer token from Bitwarden>
 
-# 3. Get the client script (from brain-tools private repo)
-cp /home/z/my-project/brain-tools/scripts/mcp_client.py /home/z/my-project/scripts/
+# 3. Get the client script (from PUBLIC agent-rules repo — no PAT needed)
+# Option A: if agent-rules is cloned locally:
+cp /path/to/agent-rules/scripts/mcp_client.py scripts/
+# Option B: download directly:
+curl -o scripts/mcp_client.py https://raw.githubusercontent.com/brilenkov/agent-rules/main/scripts/mcp_client.py
 
 # 4. Test connection
 python3 scripts/mcp_client.py list-tools
