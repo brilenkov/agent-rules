@@ -136,6 +136,103 @@ Resource: active-agents://
 - **Option C**: Ask user "zai-main is working on bot.py. Proceed anyway? (да/нет)"
 - **Option D**: Create git branch (for complex multi-file work)
 
+## 3.6 Unique agent identification (MANDATORY)
+
+Each Z.ai chat session MUST identify uniquely:
+
+### At session start — ask user for chat identifier:
+```
+Agent: "What is this chat's name? (e.g. 'brain-tools', 'aks', 'transcribe')"
+User: "brain-tools"
+Agent: [Agent Identity]
+  🤖 Agent: Z.ai brain-tools
+  🎯 Working with: <project>
+```
+
+### Git author — push under your chat name:
+```bash
+git config user.name "Z.ai <chat-name>"
+git config user.email "z-ai-<chat-name>@local"
+```
+Examples:
+- `Z.ai brain-tools` — for infrastructure/MCP/agent-rules work
+- `Z.ai aks` — for AKS aviation tests
+- `Z.ai transcribe` — for audio transcription
+- `Z.ai fns-bot` — for FNS receipt bot
+
+### Commit message format (Conventional Commits):
+```
+<type>(<project>): <description> (fixes #NN)
+
+Types: feat, fix, docs, refactor, test, chore
+Examples:
+  feat(fns-bot): T-Bank SMS parser (fixes #42)
+  fix(mcp-shared): OOM on Render free tier
+  docs(agent-rules): SETUP_GUIDE.md
+  chore(council-bot): lazy ChromaDB init
+```
+
+## 3.7 Task tracking via GitHub Issues (MANDATORY)
+
+Use GitHub Issues for task tracking instead of ad-hoc TODOs.
+
+### Before starting work:
+```
+1. list_issues("brain-tools", "open", "fns-bot")
+   → Check if there's an open issue for your project
+
+2. If no issue exists → create one:
+   create_issue("brain-tools",
+     title="[fns-bot] bug: TTS race condition",
+     body="## What\nTTS plays both browser + z-ai simultaneously\n...",
+     labels=["bug", "fns-bot"])
+
+3. Assign to yourself:
+   assign_issue("brain-tools", 42, "brilenkov")
+```
+
+### During work:
+```
+4. Register in MCP coordination:
+   register_activity("Z.ai brain-tools", "fns-bot", ["bot.py"], "issue-42")
+
+5. Commit with issue reference:
+   git commit -m "fix(fns-bot): TTS race condition (fixes #42)"
+```
+
+### After push:
+```
+6. GitHub auto-closes issue #42 (because of 'fixes #42' in commit)
+   OR manually: close_issue("brain-tools", 42, "Fixed via commit abc123")
+
+7. unregister_activity("Z.ai brain-tools")
+```
+
+### Issue title naming convention:
+```
+[<project>] <type>: <short description>
+
+Projects: fns-bot, tg-monitor, council-bot, mcp-shared, webrtc,
+          marathon-bot, agent-rules, transcribe, aks
+
+Types: bug, feature, enhancement, docs, chore, test, refactor
+
+Examples:
+  [fns-bot] bug: TTS race condition
+  [council-bot] enhancement: lazy ChromaDB init
+  [mcp-shared] feature: GitHub Issues tools
+  [agent-rules] docs: SETUP_GUIDE.md
+```
+
+### Labels (already created in brain-tools repo):
+- **Type labels**: `bug`, `feature`, `enhancement`, `docs`, `chore`, `test`, `refactor`
+- **Project labels**: `fns-bot`, `tg-monitor`, `council-bot`, `mcp-shared`, `webrtc`, `marathon-bot`, `agent-rules`, `transcribe`, `aks`
+
+### GitHub Projects (Kanban board):
+- Create manually at github.com/brilenkov → Projects → New board
+- Add issues from all repos → single view
+- Columns: Backlog → In Progress → Review → Done
+
 ## 4. How to get full context (per AI type)
 
 ### Tool-enabled AI (Cursor, Claude Code, Cline):
