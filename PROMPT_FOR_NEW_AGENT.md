@@ -1,66 +1,69 @@
 # PROMPT FOR NEW AGENT — вставь в начало нового чата с Z.ai
 
-> Скопируй текст ниже и вставь в новый чат. Агент прочитает правила и начнёт следовать.
+> Скопируй текст ниже, замени плейсхолдеры, вставь в новый чат.
+> Токены (PAT, MCP_TOKEN) НЕ в этом файле — получи у Alexey или из Bitwarden.
 
 ---
-
-## Базовая инструкция (вставь в чат)
 
 ```
 Это чат: <НАЗВАНИЕ ЧАТА>
 
-Перед началом работы — прочитай правила:
+Перед началом — прочитай правила:
 WebFetch https://github.com/brilenkov/agent-rules/blob/main/AGENT_BOOTSTRAP.md
 
-Репозитории:
-- brilenkov/brain-tools — боты, скрипты, agent-skills, mcp-shared (INFRA)
-- brilenkov/brain — Obsidian vault: daily notes, контакты, БО сохбеты
-- brilenkov/AKS — боевые тесты авиа-аппаратуры (production!)
-- brilenkov/transcribe — 133 сохбета → текст через ElevenLabs
-- brilenkov/agent-rules — PUBLIC rules (this file)
+Репозитории (private, кроме agent-rules):
+- brilenkov/brain-tools — боты, скрипты, mcp-shared
+- brilenkov/brain — Obsidian vault
+- brilenkov/AKS — авиа-тесты (production)
+- brilenkov/transcribe — 133 сохбета → текст
+- brilenkov/agent-rules — PUBLIC rules (этот файл)
+
+GitHub PAT (из Bitwarden, vault "GitHub"):
+export PAT=<PAT_ИЗ_BITWARDEN>
+git clone https://brilenkov:${PAT}@github.com/brilenkov/brain-tools.git /home/z/my-project/brain-tools
 
 После чтения AGENT_BOOTSTRAP:
 
-1. УСТАНОВИ MCP КЛИЕНТ (обязательно!):
+1. MCP КЛИЕНТ (из public repo, без PAT):
    pip install mcp
    export MCP_URL=https://mcp-shared.onrender.com/sse
-   export MCP_TOKEN=<bearer token из Bitwarden>
-   cp /home/z/my-project/brain-tools/scripts/mcp_client.py /home/z/my-project/scripts/
+   export MCP_TOKEN=<MCP_TOKEN_ИЗ_BITWARDEN>
+   mkdir -p scripts
+   curl -o scripts/mcp_client.py https://raw.githubusercontent.com/brilenkov/agent-rules/main/scripts/mcp_client.py
    python3 scripts/mcp_client.py list-tools
-   # должно показать 20 tools + 6 resources
 
-2. ИДЕНТИФИЦИРУЙ СЕБЯ:
+2. ИДЕНТИФИКАЦИЯ:
+   cd /home/z/my-project/brain-tools
    git config user.name "Z.ai <НАЗВАНИЕ ЧАТА>"
-   git config user.email "z-ai-<НАЗВАНИЕ ЧАТА>@local"
-   Представься: [Agent Identity] 🤖 Agent: Z.ai <НАЗВАНИЕ ЧАТА>
+   git config user.email "z-ai-<НАЗВАНИЕ>@local"
+   Представься: [Agent Identity]
 
-3. ЗАРЕГИСТРИРУЙСЯ В КООРДИНАЦИИ:
-   python3 scripts/mcp_client.py register "Z.ai <НАЗВАНИЕ ЧАТА>" "<project>" <files>
+3. КООРДИНАЦИЯ:
+   python3 scripts/mcp_client.py register "Z.ai-<НАЗВАНИЕ>" "<project>" <files>
    python3 scripts/mcp_client.py active-agents
-   # видишь кто ещё работает
 
-4. ПРОВЕРЬ GITHUB ISSUES:
+4. ISSUES:
    python3 scripts/mcp_client.py issues brain-tools --open
-   # возьми существующую задачу или создай новую
 
-5. ПЕРЕД GIT PUSH:
+5. ПЕРЕД PUSH:
    python3 scripts/mcp_client.py check "<project>" <files>
-   # проверь конфликты
-   Подтверди с пользователем: [Git Operation Confirmation]
    git commit -m "<type>(<project>): <desc> (fixes #NN)"
    git push origin main
 
 6. ПОСЛЕ PUSH:
-   python3 scripts/mcp_client.py unregister "Z.ai <НАЗВАНИЕ ЧАТА>"
-   # освободи файлы для других агентов
+   python3 scripts/mcp_client.py unregister "Z.ai-<НАЗВАНИЕ>"
 
-7. НЕ ИСПОЛЬЗУЙ git push --force
-
-Bearer token для MCP: <вставь из Bitwarden>
+7. NO FORCE PUSH
 
 Что делаем?
 ```
 
-## Замени <НАЗВАНИЕ ЧАТА>
+## Плейсхолдеры
 
-Примеры названий: brain-tools, aks, transcribe, fns-bot, tg-monitor, council-bot
+| Что | Где взять | Пример |
+|---|---|---|
+| НАЗВАНИЕ ЧАТА | Название вкладки | brain-tools, aks |
+| PAT_ИЗ_BITWARDEN | Bitwarden → "GitHub" | ghp_xxx |
+| MCP_TOKEN_ИЗ_BITWARDEN | Bitwarden → "MCP token" | mcp_zai_main_b_xxx |
+| project | Что делаешь | fns-bot |
+| files | Какие файлы | bot.py |
