@@ -7,61 +7,60 @@
 ## Базовая инструкция (вставь в чат)
 
 ```
+Это чат: <НАЗВАНИЕ ЧАТА>
+
 Перед началом работы — прочитай правила:
 WebFetch https://github.com/brilenkov/agent-rules/blob/main/AGENT_BOOTSTRAP.md
 
-Это чат: <НАЗВАНИЕ ЧАТА> (например: "brain-tools", "aks", "transcribe", "fns-bot")
-
-Репозитории (все private, кроме agent-rules):
+Репозитории:
 - brilenkov/brain-tools — боты, скрипты, agent-skills, mcp-shared (INFRA)
 - brilenkov/brain — Obsidian vault: daily notes, контакты, БО сохбеты
-- brilenkov/AKS — боевые тесты авиа-аппаратуры (ID-114, MK-114, MU-114, SOVA-1)
+- brilenkov/AKS — боевые тесты авиа-аппаратуры (production!)
 - brilenkov/transcribe — 133 сохбета → текст через ElevenLabs
-- brilenkov/agent-rules — PUBLIC sanitized rules для всех AI
+- brilenkov/agent-rules — PUBLIC rules (this file)
 
-После чтения правил:
-1. Идентифицируй себя: это чат "<НАЗВАНИЕ ЧАТА>"
+После чтения AGENT_BOOTSTRAP:
+
+1. УСТАНОВИ MCP КЛИЕНТ (обязательно!):
+   pip install mcp
+   export MCP_URL=https://mcp-shared.onrender.com/sse
+   export MCP_TOKEN=<bearer token из Bitwarden>
+   cp /home/z/my-project/brain-tools/scripts/mcp_client.py /home/z/my-project/scripts/
+   python3 scripts/mcp_client.py list-tools
+   # должно показать 20 tools + 6 resources
+
+2. ИДЕНТИФИЦИРУЙ СЕБЯ:
    git config user.name "Z.ai <НАЗВАНИЕ ЧАТА>"
    git config user.email "z-ai-<НАЗВАНИЕ ЧАТА>@local"
    Представься: [Agent Identity] 🤖 Agent: Z.ai <НАЗВАНИЕ ЧАТА>
 
-2. Перед стартом — проверь GitHub Issues:
-   MCP: list_issues("<repo>", "open", "<project-label>")
-   Или: WebFetch https://github.com/brilenkov/<repo>/issues
+3. ЗАРЕГИСТРИРУЙСЯ В КООРДИНАЦИИ:
+   python3 scripts/mcp_client.py register "Z.ai <НАЗВАНИЕ ЧАТА>" "<project>" <files>
+   python3 scripts/mcp_client.py active-agents
+   # видишь кто ещё работает
 
-3. Нет issue → создай:
-   MCP: create_issue("<repo>", "[<project>] <type>: <description>", body, ["<type>","<project>"])
-   Title format: [project] type: description
-   Labels: type (bug/feature/...) + project (fns-bot/tg-monitor/...)
+4. ПРОВЕРЬ GITHUB ISSUES:
+   python3 scripts/mcp_client.py issues brain-tools --open
+   # возьми существующую задачу или создай новую
 
-4. Перед git push (3+ файлов) — подтверди с пользователем
-5. Commit format: <type>(<project>): <description> (fixes #NN)
-6. После push — GitHub auto-closes issue (если 'fixes #NN' в commit)
-7. Не используй git push --force
+5. ПЕРЕД GIT PUSH:
+   python3 scripts/mcp_client.py check "<project>" <files>
+   # проверь конфликты
+   Подтверди с пользователем: [Git Operation Confirmation]
+   git commit -m "<type>(<project>): <desc> (fixes #NN)"
+   git push origin main
 
-8. Координация через MCP (если настроен):
-   register_activity("Z.ai <chat>", "<project>", ["<files>"], "issue-NN")
-   check_conflict("<project>", ["<files>"])
-   heartbeat("Z.ai <chat>") каждые 5 мин
-   unregister_activity("Z.ai <chat>") после push
+6. ПОСЛЕ PUSH:
+   python3 scripts/mcp_client.py unregister "Z.ai <НАЗВАНИЕ ЧАТА>"
+   # освободи файлы для других агентов
 
-MCP server: https://mcp-shared.onrender.com/sse
-Bearer token: <из Bitwarden>
+7. НЕ ИСПОЛЬЗУЙ git push --force
+
+Bearer token для MCP: <вставь из Bitwarden>
 
 Что делаем?
 ```
 
-## Если MCP не настроен
-
-Убери пункты 2 (list_issues через MCP), 3 (create_issue через MCP), 8 (координация).
-Используй WebFetch GitHub URLs вместо MCP tools.
-
 ## Замени <НАЗВАНИЕ ЧАТА>
 
-Перед вставкой в чат — замени `<НАЗВАНИЕ ЧАТА>` на реальное название:
-- "brain-tools" — для infrastructure/MCP/agent-rules
-- "aks" — для авиационных тестов
-- "transcribe" — для транскрибации сохбетов
-- "fns-bot" — для FNS receipt bot
-- "tg-monitor" — для monitoring bot
-- "council-bot" — для council bot
+Примеры названий: brain-tools, aks, transcribe, fns-bot, tg-monitor, council-bot
